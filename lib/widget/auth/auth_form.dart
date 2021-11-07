@@ -2,7 +2,10 @@ import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 
 class AuthForm extends StatefulWidget {
-  const AuthForm({Key? key}) : super(key: key);
+  final void Function(
+      String email, String password, String username, bool isLogin) onSubmit;
+
+  const AuthForm({Key? key, required this.onSubmit}) : super(key: key);
 
   @override
   _AuthFormState createState() => _AuthFormState();
@@ -20,9 +23,7 @@ class _AuthFormState extends State<AuthForm> {
 
     if (isValid) {
       _formKey.currentState!.save();
-      print(_userEmail);
-      print(_userName);
-      print(_userPassword);
+      widget.onSubmit(_userEmail, _userPassword, _userName, _isLogin);
     }
 
     FocusScope.of(context).unfocus();
@@ -65,24 +66,25 @@ class _AuthFormState extends State<AuthForm> {
                       },
                       onTap: () {},
                     ),
-                    if(!_isLogin)
-                    TextFormField(
-                      key: const ValueKey('username'),
-                      validator: (username) {
-                        if (username == null) {
-                          return 'Please write username';
-                        }
-                        if (username.length < 4) {
-                          return 'Username is too short, must be at least 4 characters long';
-                        }
-                        return null;
-                      },
-                      decoration: const InputDecoration(labelText: 'Username'),
-                      onSaved: (newUsername) {
-                        _userName = newUsername!;
-                      },
-                      onTap: () {},
-                    ),
+                    if (!_isLogin)
+                      TextFormField(
+                        key: const ValueKey('username'),
+                        validator: (username) {
+                          if (username == null) {
+                            return 'Please write username';
+                          }
+                          if (username.length < 4) {
+                            return 'Username is too short, must be at least 4 characters long';
+                          }
+                          return null;
+                        },
+                        decoration:
+                            const InputDecoration(labelText: 'Username'),
+                        onSaved: (newUsername) {
+                          _userName = newUsername!;
+                        },
+                        onTap: () {},
+                      ),
                     TextFormField(
                       key: const ValueKey('password'),
                       validator: (password) {
@@ -104,14 +106,16 @@ class _AuthFormState extends State<AuthForm> {
                     const SizedBox(height: 10),
                     ElevatedButton(
                       style: buttonColor(context),
-                      child: Text(_isLogin?'Login':'Signup'),
+                      child: Text(_isLogin ? 'Login' : 'Signup'),
                       onPressed: () {
                         _trySubmit();
                       },
                     ),
                     ElevatedButton(
                       style: buttonColor(context),
-                      child:  Text(_isLogin? 'Create new account':'I already have an account'),
+                      child: Text(_isLogin
+                          ? 'Create new account'
+                          : 'I already have an account'),
                       onPressed: () {
                         setState(() {
                           _isLogin = !_isLogin;
