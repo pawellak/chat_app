@@ -2,10 +2,12 @@ import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 
 class AuthForm extends StatefulWidget {
+  final bool isLoading;
   final void Function(
       String email, String password, String username, bool isLogin) onSubmit;
 
-  const AuthForm({Key? key, required this.onSubmit}) : super(key: key);
+
+  const AuthForm({Key? key, required this.onSubmit,required this.isLoading}) : super(key: key);
 
   @override
   _AuthFormState createState() => _AuthFormState();
@@ -103,6 +105,8 @@ class _AuthFormState extends State<AuthForm> {
                       onTap: () {},
                     ),
                     const SizedBox(height: 10),
+                    if(widget.isLoading) const CircularProgressIndicator(),
+                    if(!widget.isLoading)
                     ElevatedButton(
                       style: buttonColor(context),
                       child: Text(_isLogin ? 'Login' : 'Signup'),
@@ -110,6 +114,7 @@ class _AuthFormState extends State<AuthForm> {
                         _trySubmit();
                       },
                     ),
+                    if(!widget.isLoading)
                     ElevatedButton(
                       style: buttonColor(context),
                       child: Text(_isLogin
