@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:my_chat_app/widget/chat/message_bubble.dart';
 
 class Messages extends StatelessWidget {
   const Messages({Key? key}) : super(key: key);
@@ -19,7 +20,7 @@ class Messages extends StatelessWidget {
         return ListView.builder(
           reverse: true,
           itemCount: chatDocs.length,
-          itemBuilder: (context, index) => Text(chatDocs[index]['text']),
+          itemBuilder: (context, index) => MessageBubble(message:chatDocs[index]['text']),
         );
       },
     );

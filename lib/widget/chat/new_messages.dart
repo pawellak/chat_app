@@ -10,12 +10,14 @@ class NewMessages extends StatefulWidget {
 }
 
 class _NewMessagesState extends State<NewMessages> {
-  var _messageController = TextEditingController();
+  final _messageController = TextEditingController();
   var _enteredMessages = '';
 
   void _sendMessage() async {
     FocusScope.of(context).unfocus();
-    await FirebaseFirestore.instance.collection('chat').add({'text':_enteredMessages,'createdAt':Timestamp.now()});
+    await FirebaseFirestore.instance
+        .collection('chat')
+        .add({'text': _enteredMessages, 'createdAt': Timestamp.now()});
     _messageController.clear();
   }
 
