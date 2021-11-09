@@ -42,7 +42,7 @@ class _AuthScreenState extends State<AuthScreen> {
       setState(() {
         _isLoading = false;
       });
-      var errorMessage = 'An error ocurred. Please check your credentials.';
+      var errorMessage = 'An error occurred. Please check your credentials.';
       if (error.message != null) {
         errorMessage = error.message!;
       }
