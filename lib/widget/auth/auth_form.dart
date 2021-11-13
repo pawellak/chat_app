@@ -1,13 +1,16 @@
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
+import 'dart:io';
+
+import 'package:my_chat_app/widget/pickers/user_image_picker.dart';
 
 class AuthForm extends StatefulWidget {
   final bool isLoading;
   final void Function(
       String email, String password, String username, bool isLogin) onSubmit;
 
-
-  const AuthForm({Key? key, required this.onSubmit,required this.isLoading}) : super(key: key);
+  const AuthForm({Key? key, required this.onSubmit, required this.isLoading})
+      : super(key: key);
 
   @override
   _AuthFormState createState() => _AuthFormState();
@@ -19,13 +22,25 @@ class _AuthFormState extends State<AuthForm> {
   late String _userEmail = '';
   late String _userName = '';
   late String _userPassword = '';
+  File? _userImageFile;
+
+  void _pickedImage(File image) {
+    _userImageFile = image;
+  }
 
   void _trySubmit() {
     final isValid = _formKey.currentState!.validate();
 
+    if (_userImageFile == null) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(const SnackBar(content: Text('Please pick an image')));
+      return;
+    }
+
     if (isValid) {
       _formKey.currentState!.save();
-      widget.onSubmit(_userEmail.trim(), _userPassword.trim(), _userName.trim(), _isLogin);
+      widget.onSubmit(
+          _userEmail.trim(), _userPassword.trim(), _userName.trim(), _isLogin);
     }
     FocusScope.of(context).unfocus();
   }
@@ -42,6 +57,10 @@ class _AuthFormState extends State<AuthForm> {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
+                    if (!_isLogin)
+                      UserImagePicker(
+                        imagePickFn: _pickedImage,
+                      ),
                     TextFormField(
                       key: const ValueKey('email'),
                       validator: (email) {
@@ -105,27 +124,27 @@ class _AuthFormState extends State<AuthForm> {
                       onTap: () {},
                     ),
                     const SizedBox(height: 10),
-                    if(widget.isLoading) const CircularProgressIndicator(),
-                    if(!widget.isLoading)
-                    ElevatedButton(
-                      style: buttonColor(context),
-                      child: Text(_isLogin ? 'Login' : 'Signup'),
-                      onPressed: () {
-                        _trySubmit();
-                      },
-                    ),
-                    if(!widget.isLoading)
-                    ElevatedButton(
-                      style: buttonColor(context),
-                      child: Text(_isLogin
-                          ? 'Create new account'
-                          : 'I already have an account'),
-                      onPressed: () {
-                        setState(() {
-                          _isLogin = !_isLogin;
-                        });
-                      },
-                    )
+                    if (widget.isLoading) const CircularProgressIndicator(),
+                    if (!widget.isLoading)
+                      ElevatedButton(
+                        style: buttonColor(context),
+                        child: Text(_isLogin ? 'Login' : 'Signup'),
+                        onPressed: () {
+                          _trySubmit();
+                        },
+                      ),
+                    if (!widget.isLoading)
+                      ElevatedButton(
+                        style: buttonColor(context),
+                        child: Text(_isLogin
+                            ? 'Create new account'
+                            : 'I already have an account'),
+                        onPressed: () {
+                          setState(() {
+                            _isLogin = !_isLogin;
+                          });
+                        },
+                      )
                   ],
                 ))),
       ),
