@@ -1,13 +1,12 @@
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
-import 'dart:io';
-
 import 'package:my_chat_app/widget/pickers/user_image_picker.dart';
+import 'dart:io';
 
 class AuthForm extends StatefulWidget {
   final bool isLoading;
   final void Function(
-      String email, String password, String username, bool isLogin) onSubmit;
+      String email, String password, String username,File? image, bool isLogin) onSubmit;
 
   const AuthForm({Key? key, required this.onSubmit, required this.isLoading})
       : super(key: key);
@@ -40,7 +39,7 @@ class _AuthFormState extends State<AuthForm> {
     if (isValid) {
       _formKey.currentState!.save();
       widget.onSubmit(
-          _userEmail.trim(), _userPassword.trim(), _userName.trim(), _isLogin);
+          _userEmail.trim(), _userPassword.trim(), _userName.trim(),_userImageFile,_isLogin);
     }
     FocusScope.of(context).unfocus();
   }
