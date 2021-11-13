@@ -21,11 +21,13 @@ class _NewMessagesState extends State<NewMessages> {
         .collection('users')
         .doc(user!.uid)
         .get();
+
     await FirebaseFirestore.instance.collection('chat').add({
       'text': _enteredMessages,
       'createdAt': Timestamp.now(),
       'userId': user.uid,
       'username': userData['username'],
+      'userImage': userData['imagr_url'],
     });
     _messageController.clear();
   }
