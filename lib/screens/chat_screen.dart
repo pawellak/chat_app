@@ -1,14 +1,40 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:my_chat_app/widget/chat/messages.dart';
 import 'package:my_chat_app/widget/chat/new_messages.dart';
 
-class ChatScreen extends StatelessWidget {
+class ChatScreen extends StatefulWidget {
   const ChatScreen({Key? key}) : super(key: key);
 
   @override
+  State<ChatScreen> createState() => _ChatScreenState();
+}
+
+class _ChatScreenState extends State<ChatScreen> {
+@override
+  void initState() {
+  final fbm = FirebaseMessaging.instance;
+  fbm.requestPermission();
+
+  FirebaseMessaging.onMessage.listen((message) {
+    print('onMessage ####TO JEST MOJA WIADOMOSC');
+    print(message);
+    return;
+  });
+
+  FirebaseMessaging.onMessageOpenedApp.listen((message) {
+    print('onMessageOpenedApp ####TO JEST MOJA WIADOMOSC');
+    print(message);
+    return;
+  });
+  fbm.subscribeToTopic('chat');
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       appBar: AppBar(
         actions: [
@@ -43,7 +69,6 @@ class ChatScreen extends StatelessWidget {
         children: const [
           Expanded(child: Messages()),
           NewMessages(),
-
         ],
       ),
 
